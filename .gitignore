@@ -1,0 +1,31 @@
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+.cache/
+
+# Saídas de treino, checkpoints e rastreamento
+runs/
+outputs/
+checkpoints/
+*.safetensors
+*.bin
+*.pt
+wandb/
+
+# Dados: só os exemplos são versionados
+data/*
+!data/exemplo/
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

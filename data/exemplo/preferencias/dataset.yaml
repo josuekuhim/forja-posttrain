@@ -1,0 +1,10 @@
+nome: exemplo-preferencias
+uso: treino   # treino | avaliacao. Pares vindos de dataset de avaliação são recusados (anti-circularidade).
+# Proveniência obrigatória: diretórios (com dataset.yaml) dos quais os pares foram gerados.
+# Pares do `forja-evals pairs` apontam para o dataset de treino usado; estes foram escritos à mão.
+gerado_de:
+  - escrito-a-mao
+descricao: >
+  EXEMPLO. Três pares escritos à mão só para o pipeline de DPO rodar de ponta a ponta.
+  Não medem nada; o conjunto real vem do `forja-evals pairs` sobre um dataset com uso: treino.
+licenca: CC-BY-4.0

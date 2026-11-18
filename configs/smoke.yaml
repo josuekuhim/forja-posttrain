@@ -1,0 +1,38 @@
+# Smoke test em CPU: modelo Qwen2 minúsculo e aleatório + tokenizer BPE treinado na hora.
+# Nada é baixado. Serve para provar que o encanamento (dados -> TRL -> PEFT -> salvar) funciona.
+#   uv run forja-posttrain train configs/smoke.yaml
+#   uv run forja-posttrain train configs/smoke.yaml method=dpo out_dir=runs/smoke-dpo
+name: smoke
+method: lora
+seed: 42
+out_dir: runs/smoke
+
+model:
+  base_id: tiny-random
+  dtype: float32
+
+lora:
+  r: 4
+  alpha: 8
+  dropout: 0.0
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  learning_rate: 1.0e-3
+  max_steps: 3
+  batch_size: 2
+  grad_accum: 1
+  max_length: 1024          # o prompt de sistema sozinho passa de 256 tokens com o tokenizer minúsculo
+  warmup: 0
+  scheduler: constant
+  precision: fp32
+  activation_checkpointing: false
+  logging_steps: 1
+  save_steps: 0
+  eval_fraction: 0.0
+  use_cpu: true
+
+data:
+  train_path: data/exemplo/sft.jsonl
+  preference_dir: data/exemplo/preferencias
+  eval_dataset_dirs: [../forja-evals/datasets/forja-seed-v0]

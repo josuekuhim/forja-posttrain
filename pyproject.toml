@@ -1,0 +1,65 @@
+[project]
+name = "forja-posttrain"
+version = "0.1.0"
+description = "Pós-treino do modelo base do Forja: SFT completo, LoRA, QLoRA e DPO, avaliados pelo forja-evals"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "forja-contracts",
+    "pydantic>=2.7",
+    "torch>=2.4",
+    "transformers>=5.23",
+    "datasets>=3",
+    "peft>=0.21",
+    "trl>=1.18",
+    "accelerate>=1.0",
+    "tokenizers>=0.22",
+    "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+# Só em GPU (Kaggle/Colab). Não instalado por padrão: não roda no Windows/CPU e pesa centenas de MB.
+gpu = ["bitsandbytes>=0.44"]
+track = ["wandb>=0.18"]
+
+[project.scripts]
+forja-posttrain = "forja_posttrain.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forja_posttrain"]
+
+# CPU local; no Kaggle/Colab o torch com CUDA já vem instalado.
+# forja-contracts local. Ao publicar o hub no GitHub, troque por:
+# forja-contracts = { git = "https://github.com/<usuario>/forja", subdirectory = "contracts" }
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'win32'" }]
+forja-contracts = { path = "../forja/contracts", editable = true }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Aviso interno do transformers 5.23 (o próprio Trainer ainda chama o nome antigo); não vem do nosso código.
+filterwarnings = ["ignore:`is_gradient_checkpointing` is deprecated:FutureWarning"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.uv]
+# O Smart App Control do Windows bloqueou a DLL do regex 2026.11.19 (binário recém-publicado, sem reputação).
+# Uma versão mais antiga e amplamente distribuída carrega normalmente.
+constraint-dependencies = ["regex<2026"]

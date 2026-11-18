@@ -1,0 +1,46 @@
+# SFT com QLoRA (base em NF4 + adapter LoRA) no Qwen2.5-Coder-1.5B-Instruct, T4 de 16 GB.
+# Exige `uv sync --extra gpu` (bitsandbytes, só CUDA).
+#
+# VRAM estimada: base 4-bit ~1,2 GB (embedding fica em fp16, ~0,47 GB) + adapter/Adam ~0,2 GB
+#   + ativações/logits com batch 4 ~4 GB  =>  ~5-7 GB. Sobra espaço para batch maior ou contexto de 2048.
+# Custo: ~20-40% mais lento que LoRA (dequantização a cada forward). A pergunta do experimento é
+# quanto de qualidade se perde por isso (o forja-evals responde).
+name: sft-qlora
+method: qlora
+seed: 42
+out_dir: runs/sft-qlora
+
+model:
+  base_id: Qwen/Qwen2.5-Coder-1.5B-Instruct
+  dtype: float16            # dtype dos módulos que não são quantizados (embedding, norms)
+  attn_implementation: sdpa
+
+quant:
+  quant_type: nf4           # NormalFloat4, o do paper do QLoRA
+  double_quant: true        # quantiza também as constantes de escala (~0,4 bit/parâmetro a menos)
+  compute_dtype: float16    # T4: float16; em A100/L4 use bfloat16
+
+lora:
+  r: 16                     # mesmo adapter do sft_lora.yaml: a única variável é a quantização do base
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  learning_rate: 2.0e-4
+  num_epochs: 3
+  batch_size: 2             # igual ao LoRA para a comparação ser justa (uma variável por vez)
+  grad_accum: 8
+  max_length: 1024
+  warmup: 0.03
+  scheduler: cosine
+  precision: fp16
+  activation_checkpointing: true
+  optim: paged_adamw_8bit   # do paper do QLoRA; absorve picos de memória paginando para a CPU
+  logging_steps: 10
+  save_steps: 200
+  eval_fraction: 0.05
+
+data:
+  train_path: data/sft.jsonl
+  eval_dataset_dirs: [../forja-evals/datasets/forja-seed-v0]

@@ -1,0 +1,36 @@
+# SFT completo (todos os pesos). NÃO cabe com o 1,5B num T4:
+#   1,54B parâmetros x (4 B pesos fp32 + 4 B gradientes + 8 B Adam) ~ 24,6 GB, antes das ativações.
+# Por isso o padrão aqui é o plano B do ADR 0001, o Qwen2.5-Coder-0.5B-Instruct (mesmo tokenizer):
+#   0,49B x 16 B ~ 7,9 GB + ativações/logits ~3 GB  =>  ~11 GB num T4.
+# A comparação justa "full vs LoRA vs QLoRA" roda então no 0,5B (E1 no README); para o 1,5B completo,
+# use uma GPU de 24 GB+ (L4/A100) com `train.optim=adamw_8bit` (extra gpu):
+#   uv run forja-posttrain train configs/sft_full.yaml model.base_id=Qwen/Qwen2.5-Coder-1.5B-Instruct train.optim=adamw_8bit
+name: sft-full
+method: sft_full
+seed: 42
+out_dir: runs/sft-full
+
+model:
+  base_id: Qwen/Qwen2.5-Coder-0.5B-Instruct
+  dtype: float32            # AMP fp16 exige pesos mestres em fp32 (o GradScaler não desescala gradientes fp16)
+  attn_implementation: sdpa
+
+train:
+  learning_rate: 1.0e-5     # ~20x menor que no LoRA: todos os pesos mudam, e esquecimento catastrófico é o risco
+  num_epochs: 2
+  batch_size: 2
+  grad_accum: 8
+  max_length: 1024
+  warmup: 0.03
+  scheduler: cosine
+  weight_decay: 0.01
+  precision: fp16
+  activation_checkpointing: true
+  optim: adamw_torch
+  logging_steps: 10
+  save_steps: 200
+  eval_fraction: 0.05
+
+data:
+  train_path: data/sft.jsonl
+  eval_dataset_dirs: [../forja-evals/datasets/forja-seed-v0]
