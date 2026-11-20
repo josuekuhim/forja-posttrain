@@ -1,0 +1,319 @@
+{
+ "revisores": {
+  "Qwen 0.5B base · prompt completo": {
+   "teste": {
+    "achados": 2,
+    "bugs": 53,
+    "extras": 25,
+    "comentarios": 27,
+    "problemas_de_formato": 57,
+    "segundos_no_modelo": 14016.8
+   }
+  },
+  "Qwen 0.5B base · prompt curto": {
+   "teste": {
+    "achados": 1,
+    "bugs": 53,
+    "extras": 39,
+    "comentarios": 40,
+    "problemas_de_formato": 48,
+    "segundos_no_modelo": 5064.2
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "extras": 2,
+    "comentarios": 2,
+    "problemas_de_formato": 1,
+    "segundos_no_modelo": 73.1
+   },
+   "plantados": {
+    "achados": 0,
+    "bugs": 8,
+    "extras": 5,
+    "comentarios": 5,
+    "problemas_de_formato": 1,
+    "segundos_no_modelo": 202.2
+   }
+  },
+  "Qwen 0.5B + SFT": {
+   "teste": {
+    "achados": 15,
+    "bugs": 53,
+    "extras": 44,
+    "comentarios": 60,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 4125.7
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "extras": 2,
+    "comentarios": 2,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 80.3
+   },
+   "plantados": {
+    "achados": 2,
+    "bugs": 8,
+    "extras": 1,
+    "comentarios": 3,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 109.0
+   }
+  },
+  "Qwen 0.5B + SFT + DPO": {
+   "teste": {
+    "achados": 11,
+    "bugs": 53,
+    "extras": 34,
+    "comentarios": 45,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 7624.2
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "extras": 1,
+    "comentarios": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 43.5
+   },
+   "plantados": {
+    "achados": 3,
+    "bugs": 8,
+    "extras": 1,
+    "comentarios": 3,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 99.9
+   }
+  },
+  "bandit": {
+   "teste": {
+    "achados": 15,
+    "bugs": 53,
+    "extras": 3,
+    "comentarios": 18,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 3.1
+   },
+   "holdout": {
+    "achados": 1,
+    "bugs": 4,
+    "extras": 0,
+    "comentarios": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 2.6
+   },
+   "plantados": {
+    "achados": 1,
+    "bugs": 8,
+    "extras": 0,
+    "comentarios": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 2.6
+   }
+  },
+  "ruff": {
+   "teste": {
+    "achados": 25,
+    "bugs": 53,
+    "extras": 4,
+    "comentarios": 29,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.3
+   },
+   "holdout": {
+    "achados": 2,
+    "bugs": 4,
+    "extras": 0,
+    "comentarios": 2,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   },
+   "plantados": {
+    "achados": 2,
+    "bugs": 8,
+    "extras": 1,
+    "comentarios": 3,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   }
+  },
+  "ruff + SFT": {
+   "teste": {
+    "achados": 32,
+    "bugs": 53,
+    "extras": 48,
+    "comentarios": 89,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.3
+   },
+   "holdout": {
+    "achados": 2,
+    "bugs": 4,
+    "extras": 2,
+    "comentarios": 4,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   },
+   "plantados": {
+    "achados": 3,
+    "bugs": 8,
+    "extras": 2,
+    "comentarios": 6,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   }
+  },
+  "ruff + DPO": {
+   "teste": {
+    "achados": 28,
+    "bugs": 53,
+    "extras": 38,
+    "comentarios": 74,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.3
+   },
+   "holdout": {
+    "achados": 2,
+    "bugs": 4,
+    "extras": 1,
+    "comentarios": 3,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   },
+   "plantados": {
+    "achados": 3,
+    "bugs": 8,
+    "extras": 2,
+    "comentarios": 6,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   }
+  }
+ },
+ "por_classe": {
+  "rede": {
+   "bugs": 9,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 0,
+   "Qwen 0.5B + SFT + DPO": 0,
+   "bandit": 5,
+   "ruff": 5,
+   "ruff + SFT": 5,
+   "ruff + DPO": 5
+  },
+  "sql_injecao": {
+   "bugs": 6,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 3,
+   "Qwen 0.5B + SFT + DPO": 3,
+   "bandit": 5,
+   "ruff": 5,
+   "ruff + SFT": 5,
+   "ruff + DPO": 5
+  },
+  "condicao_invertida": {
+   "bugs": 6,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 2,
+   "Qwen 0.5B + SFT + DPO": 1,
+   "bandit": 0,
+   "ruff": 0,
+   "ruff + SFT": 2,
+   "ruff + DPO": 1
+  },
+  "off_by_one": {
+   "bugs": 5,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 1,
+   "Qwen 0.5B + SFT": 0,
+   "Qwen 0.5B + SFT + DPO": 0,
+   "bandit": 0,
+   "ruff": 0,
+   "ruff + SFT": 0,
+   "ruff + DPO": 0
+  },
+  "comando_injecao": {
+   "bugs": 5,
+   "Qwen 0.5B base · prompt completo": 1,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 4,
+   "Qwen 0.5B + SFT + DPO": 2,
+   "bandit": 5,
+   "ruff": 5,
+   "ruff + SFT": 5,
+   "ruff + DPO": 5
+  },
+  "divisao_vazia": {
+   "bugs": 5,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 2,
+   "Qwen 0.5B + SFT + DPO": 1,
+   "bandit": 0,
+   "ruff": 0,
+   "ruff + SFT": 2,
+   "ruff + DPO": 1
+  },
+  "paginacao": {
+   "bugs": 5,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 2,
+   "Qwen 0.5B + SFT + DPO": 0,
+   "bandit": 0,
+   "ruff": 0,
+   "ruff + SFT": 2,
+   "ruff + DPO": 0
+  },
+  "padrao_mutavel": {
+   "bugs": 4,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 1,
+   "Qwen 0.5B + SFT + DPO": 2,
+   "bandit": 0,
+   "ruff": 4,
+   "ruff + SFT": 4,
+   "ruff + DPO": 4
+  },
+  "remove_iterando": {
+   "bugs": 4,
+   "Qwen 0.5B base · prompt completo": 1,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 0,
+   "Qwen 0.5B + SFT + DPO": 1,
+   "bandit": 0,
+   "ruff": 4,
+   "ruff + SFT": 4,
+   "ruff + DPO": 4
+  },
+  "excecao_engolida": {
+   "bugs": 3,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 0,
+   "Qwen 0.5B + SFT + DPO": 0,
+   "bandit": 0,
+   "ruff": 2,
+   "ruff + SFT": 2,
+   "ruff + DPO": 2
+  },
+  "recurso_aberto": {
+   "bugs": 1,
+   "Qwen 0.5B base · prompt completo": 0,
+   "Qwen 0.5B base · prompt curto": 0,
+   "Qwen 0.5B + SFT": 1,
+   "Qwen 0.5B + SFT + DPO": 1,
+   "bandit": 0,
+   "ruff": 0,
+   "ruff + SFT": 1,
+   "ruff + DPO": 1
+  }
+ }
+}

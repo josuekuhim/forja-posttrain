@@ -1,0 +1,46 @@
+# DPO on-policy sobre o SFT de review (review_lora_cpu.yaml, mesclado em D:). CPU, fp32.
+# Pares: scripts/gerar_preferencias.py (escolhida = gabarito; rejeitada = erro do próprio SFT).
+# Referência = o SFT com o adapter desligado: não há segunda cópia do modelo na memória.
+name: review-dpo-cpu
+method: dpo
+seed: 42
+out_dir: runs/review-dpo-cpu
+
+model:
+  base_id: Qwen/Qwen2.5-Coder-0.5B-Instruct   # registrado no summary; a política vem de dpo.policy_path
+  dtype: float32
+  attn_implementation: sdpa
+
+dpo:
+  policy_path: D:/ai-ml-models/review-lora-cpu-merged
+  beta: 0.1
+  loss_type: sigmoid
+  use_lora: true
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  learning_rate: 2.0e-5     # LoRA tolera LR maior que o DPO full (5e-6); acima disso a política colapsa
+  num_epochs: 1
+  batch_size: 1
+  grad_accum: 8
+  max_length: 1024
+  warmup: 0.1
+  scheduler: cosine
+  precision: fp32
+  activation_checkpointing: true   # pico de RAM: o 1º DPO caiu por falta de memória no passo 3; no SFT medimos que não muda a velocidade
+  optim: adamw_torch
+  logging_steps: 2
+  save_steps: 5
+  eval_fraction: 0.1
+  use_cpu: true
+
+data:
+  preference_dir: data/review-preferencias-v0
+  eval_dataset_dirs: [../forja-evals/datasets/forja-seed-v0]
+  # O mesmo prompt curto do forja-review (estilo "curto", max_comentarios=3) que o SFT viu.
+  system_prompt: 'Revise o diff de UM arquivo de um pull request. Aponte só problemas reais nas linhas adicionadas, em português do Brasil, com a correção. No máximo 3 comentários. Responda só com JSON: {"resumo": "...", "comentarios": [{"linha": 12, "severidade": "bug|risco|sugestao", "comentario": "..."}]}'

@@ -1,0 +1,40 @@
+# SFT com LoRA do Qwen2.5-Coder-0.5B-Instruct na tarefa do forja-review, em CPU (Ryzen 5 5625U, 24 GB).
+#
+# Medido antes de configurar: um passo (forward + backward) de 1 exemplo com ~1.100 tokens leva ~30 s
+# em CPU fp32. Por isso o prompt curto do forja-review (o modelo treinado não precisa das regras no
+# contexto) e exemplos compactos: ~400 tokens por exemplo, ~8-12 s por passo.
+name: review-lora-cpu
+method: lora
+seed: 42
+out_dir: runs/review-lora-cpu
+
+model:
+  base_id: Qwen/Qwen2.5-Coder-0.5B-Instruct
+  dtype: float32            # CPU: fp16/bf16 não aceleram o Zen 3 e só perdem precisão
+  attn_implementation: sdpa
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+train:
+  learning_rate: 2.0e-4
+  num_epochs: 2
+  batch_size: 1             # sem padding: em CPU o lote não acelera, só soma tokens de padding
+  grad_accum: 8             # lote efetivo 8
+  max_length: 1024
+  warmup: 0.05
+  scheduler: cosine
+  precision: fp32
+  activation_checkpointing: false   # memória sobra (24 GB); checkpointing só custa tempo
+  optim: adamw_torch
+  logging_steps: 5
+  save_steps: 25
+  eval_fraction: 0.05
+  use_cpu: true
+
+data:
+  train_path: data/review-sintetico-v0/sft.jsonl
+  eval_dataset_dirs: [../forja-evals/datasets/forja-seed-v0]

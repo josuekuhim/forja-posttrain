@@ -26,6 +26,8 @@ forja-posttrain = "forja_posttrain.cli:main"
 
 [dependency-groups]
 dev = ["pytest>=8", "ruff>=0.6"]
+# Gerar o dataset de review usa o próprio forja-review para montar o prompt (o mesmo da inferência).
+dados = ["forja-review"]
 
 [build-system]
 requires = ["hatchling"]
@@ -40,6 +42,7 @@ packages = ["src/forja_posttrain"]
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'win32'" }]
 forja-contracts = { path = "../forja/contracts", editable = true }
+forja-review = { path = "../forja-review", editable = true }
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
