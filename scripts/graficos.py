@@ -29,8 +29,8 @@ PRS = {
 }
 ARQ = {"teste": "teste", "holdout": "holdout", "plantados": "bugs"}  # prefixo em forja-review/results
 REVISORES = [  # (rótulo, sufixo do arquivo em forja-review/results)
-    ("Qwen 0.5B base · prompt completo", "qwen0.5b-base-completo"),
-    ("Qwen 0.5B base · prompt curto", "qwen0.5b-base-curto"),
+    ("Qwen 0.5B base · full prompt", "qwen0.5b-base-completo"),
+    ("Qwen 0.5B base · short prompt", "qwen0.5b-base-curto"),
     ("Qwen 0.5B + SFT", "qwen0.5b-sft-curto"),
     ("Qwen 0.5B + SFT + DPO", "qwen0.5b-dpo-curto"),
     ("bandit", "bandit"),
@@ -43,10 +43,10 @@ REVISORES = [  # (rótulo, sufixo do arquivo em forja-review/results)
 SUP, TXT, TXT2, GRADE = "#fcfcfb", "#0b0b0b", "#52514e", "#e5e4e0"
 AZUL, LARANJA, VERDE = "#2a78d6", "#eb6834", "#1baf7a"
 CLASSES = {
-    "rede": "rede: timeout/status", "sql_injecao": "injeção de SQL", "condicao_invertida": "condição invertida",
-    "off_by_one": "off-by-one", "comando_injecao": "injeção de comando", "divisao_vazia": "divisão por vazio",
-    "paginacao": "paginação", "padrao_mutavel": "default mutável", "remove_iterando": "remove iterando",
-    "excecao_engolida": "exceção engolida", "recurso_aberto": "recurso sem fechar", "identidade": "is × ==",
+    "rede": "network: timeout/status", "sql_injecao": "SQL injection", "condicao_invertida": "inverted condition",
+    "off_by_one": "off-by-one", "comando_injecao": "command injection", "divisao_vazia": "division by empty",
+    "paginacao": "pagination", "padrao_mutavel": "mutable default", "remove_iterando": "remove while iterating",
+    "excecao_engolida": "swallowed exception", "recurso_aberto": "unclosed resource", "identidade": "is × ==",
 }
 FONTE = "font-family='system-ui, -apple-system, Segoe UI, sans-serif'"
 
@@ -163,7 +163,7 @@ def linhas_svg(titulo, sub, series, xmax, ymax, w=760, h=330):
         s.append(_txt(esq - 8, Y(v) + 4, f"{v:.1f}".replace(".", ","), cor=TXT2, tam=11, ancora="end"))
     for v in range(0, xmax + 1, 16):
         s.append(_txt(X(v), topo + ph + 18, v, cor=TXT2, tam=11, ancora="middle"))
-    s.append(_txt(esq + pw / 2, topo + ph + 36, "passo de otimização", cor=TXT2, tam=11, ancora="middle"))
+    s.append(_txt(esq + pw / 2, topo + ph + 36, "optimization step", cor=TXT2, tam=11, ancora="middle"))
     for _, cor, pts, marc in series:
         d = " ".join(f"{'M' if k == 0 else 'L'}{X(x):.1f},{Y(y):.1f}" for k, (x, y) in enumerate(pts))
         s.append(f"<path d='{d}' fill='none' stroke='{cor}' stroke-width='2' stroke-linejoin='round'/>")
@@ -187,17 +187,17 @@ def main() -> None:
     linhas = [(r, [d["teste"]["achados"], d["teste"]["extras"]]) for r, d in rev.items() if "teste" in d]
     n = next(iter(rev.values()))["teste"]["bugs"]
     (img / "review-teste.svg").write_text(barras_agrupadas(
-        f"PR de teste: {n} bugs em 60 arquivos, de templates nunca vistos no treino",
-        "Achado = comentário a até 2 linhas do bug que fala do problema. Extra = comentário que não bate com bug nenhum.",
-        linhas, [("bugs achados", AZUL), ("comentários extras (ruído)", LARANJA)], 50, 10, "contagem"),
+        f"Test PR: {n} bugs in 60 files, from templates never seen in training",
+        "Found = a comment within 2 lines of the bug that names the problem. Extra = a comment that matches no bug.",
+        linhas, [("bugs found", AZUL), ("extra comments (noise)", LARANJA)], 50, 10, "count"),
         encoding="utf-8")
 
     pc = dados["por_classe"]
     linhas = [(f"{CLASSES.get(c, c)} ({v['bugs']})", [v.get("ruff"), v.get("Qwen 0.5B + SFT")]) for c, v in pc.items()]
     (img / "review-classes.svg").write_text(barras_agrupadas(
-        "Por classe de bug: o linter pega padrão, o modelo pega semântica",
-        "Bugs achados no PR de teste; entre parênteses, quantos bugs a classe tem.",
-        linhas, [("ruff", AZUL), ("Qwen 0.5B + SFT", LARANJA)], 9, 1, "bugs achados"), encoding="utf-8")
+        "By bug class: the linter catches patterns, the model catches semantics",
+        "Bugs found in the test PR; in parentheses, how many bugs the class has.",
+        linhas, [("ruff", AZUL), ("Qwen 0.5B + SFT", LARANJA)], 9, 1, "bugs found"), encoding="utf-8")
 
     estado = sorted((RAIZ / "runs/review-lora-cpu/checkpoints").glob("checkpoint-*/trainer_state.json"),
                     key=lambda p: int(p.parent.name.split("-")[1]))
@@ -206,9 +206,9 @@ def main() -> None:
         tr = [(x["step"], x["loss"]) for x in h if "loss" in x]
         ev = [(x["step"], x["eval_loss"]) for x in h if "eval_loss" in x]
         (img / "review-loss.svg").write_text(linhas_svg(
-            "SFT LoRA: perda de treino e de validação (96 passos, 3h36 em CPU)",
-            "Validação = 20 exemplos separados do mesmo gerador: mede o encaixe no formato, não a generalização.",
-            [("treino", AZUL, tr, False), ("validação", LARANJA, ev, True)], 96, 2.0), encoding="utf-8")
+            "SFT LoRA: training and validation loss (96 steps, 3h36 on CPU)",
+            "Validation = 20 held-out examples from the same generator: it measures fit to the format, not generalization.",
+            [("train", AZUL, tr, False), ("validation", LARANJA, ev, True)], 96, 2.0), encoding="utf-8")
     print(json.dumps(dados["revisores"], ensure_ascii=False, indent=1)[:1500])
 
 

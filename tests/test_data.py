@@ -129,6 +129,17 @@ def test_near_dup_por_jaccard():
     assert rep.quase_duplicatas[0][2] >= 0.8
 
 
+def test_near_dup_poupa_par_contrastivo_do_mesmo_arquivo():
+    """O mesmo arquivo com bug e corrigido é quase igual de propósito: os dois ficam. De outro arquivo, sai."""
+    base = "Revise este diff de um arquivo que lê a configuração do disco e devolve o dicionário com os valores padrão aplicados"
+    bug = _ex(1, base, "Linha 3: a chave pode faltar; use get.") | {"origem": "github:r@abc:cfg.py"}
+    ok = _ex(2, base + " ok", "Linha 3: a chave pode faltar; use get.") | {"origem": "github:r@abc:cfg.py#corrigido"}
+    outro = _ex(3, base + " outro", "Linha 3: a chave pode faltar; use get.") | {"origem": "github:r@abc:util.py#bug"}
+    rep = dedup([InstructionExample.model_validate(x) for x in (bug, ok, outro)], n=3, limiar=0.8)
+    assert [e.id for e in rep.mantidos] == ["t-1", "t-2"]
+    assert rep.quase_duplicatas[0][0] == "t-3"
+
+
 # --------------------------------------------------------------------------- contaminação
 
 

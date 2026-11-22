@@ -1,0 +1,232 @@
+{
+ "revisores": {
+  "Qwen 0.5B base · prompt curto": {
+   "teste": {
+    "achados": 1,
+    "bugs": 53,
+    "comentarios": 40,
+    "extras": 39,
+    "problemas_de_formato": 48,
+    "segundos_no_modelo": 5064.2,
+    "arquivos_limpos": 23,
+    "limpos_com_comentario": 10
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "comentarios": 2,
+    "extras": 2,
+    "problemas_de_formato": 1,
+    "segundos_no_modelo": 73.1
+   },
+   "bugs": {
+    "achados": 0,
+    "bugs": 8,
+    "comentarios": 5,
+    "extras": 5,
+    "problemas_de_formato": 1,
+    "segundos_no_modelo": 202.2
+   },
+   "real": {
+    "achados": 4,
+    "bugs": 199,
+    "comentarios": 155,
+    "extras": 151,
+    "problemas_de_formato": 264,
+    "segundos_no_modelo": 42307.3,
+    "arquivos_limpos": 199,
+    "limpos_com_comentario": 76
+   }
+  },
+  "SFT CPU (sintético, R1)": {
+   "teste": {
+    "achados": 15,
+    "bugs": 53,
+    "comentarios": 60,
+    "extras": 44,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 4125.7,
+    "arquivos_limpos": 23,
+    "limpos_com_comentario": 20
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "comentarios": 2,
+    "extras": 2,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 80.3
+   },
+   "bugs": {
+    "achados": 2,
+    "bugs": 8,
+    "comentarios": 3,
+    "extras": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 109.0
+   },
+   "real": {
+    "achados": 9,
+    "bugs": 199,
+    "comentarios": 317,
+    "extras": 308,
+    "problemas_de_formato": 7,
+    "segundos_no_modelo": 24095.6,
+    "arquivos_limpos": 199,
+    "limpos_com_comentario": 149
+   }
+  },
+  "D1 · T4 sintético": {
+   "teste": {
+    "achados": 15,
+    "bugs": 53,
+    "comentarios": 59,
+    "extras": 43,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 3633.3,
+    "arquivos_limpos": 23,
+    "limpos_com_comentario": 20
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "comentarios": 2,
+    "extras": 2,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 33.9
+   },
+   "bugs": {
+    "achados": 2,
+    "bugs": 8,
+    "comentarios": 3,
+    "extras": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 74.8
+   },
+   "real": {
+    "achados": 9,
+    "bugs": 199,
+    "comentarios": 322,
+    "extras": 313,
+    "problemas_de_formato": 6,
+    "segundos_no_modelo": 24949.2,
+    "arquivos_limpos": 199,
+    "limpos_com_comentario": 151
+   }
+  },
+  "D2 · T4 real": {
+   "teste": {
+    "achados": 4,
+    "bugs": 53,
+    "comentarios": 23,
+    "extras": 19,
+    "problemas_de_formato": 2,
+    "segundos_no_modelo": 4705.7,
+    "arquivos_limpos": 23,
+    "limpos_com_comentario": 7
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "comentarios": 1,
+    "extras": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 44.5
+   },
+   "bugs": {
+    "achados": 0,
+    "bugs": 8,
+    "comentarios": 0,
+    "extras": 0,
+    "problemas_de_formato": 1,
+    "segundos_no_modelo": 84.2
+   },
+   "real": {
+    "achados": 27,
+    "bugs": 199,
+    "comentarios": 116,
+    "extras": 89,
+    "problemas_de_formato": 6,
+    "segundos_no_modelo": 21192.0,
+    "arquivos_limpos": 199,
+    "limpos_com_comentario": 58
+   }
+  },
+  "D3 · T4 misto": {
+   "teste": {
+    "achados": 9,
+    "bugs": 53,
+    "comentarios": 52,
+    "extras": 43,
+    "problemas_de_formato": 3,
+    "segundos_no_modelo": 3985.4,
+    "arquivos_limpos": 23,
+    "limpos_com_comentario": 19
+   },
+   "holdout": {
+    "achados": 0,
+    "bugs": 4,
+    "comentarios": 2,
+    "extras": 2,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 43.6
+   },
+   "bugs": {
+    "achados": 4,
+    "bugs": 8,
+    "comentarios": 4,
+    "extras": 0,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 74.6
+   },
+   "real": {
+    "achados": 25,
+    "bugs": 199,
+    "comentarios": 119,
+    "extras": 94,
+    "problemas_de_formato": 1,
+    "segundos_no_modelo": 20966.3,
+    "arquivos_limpos": 199,
+    "limpos_com_comentario": 57
+   }
+  },
+  "ruff": {
+   "teste": {
+    "achados": 25,
+    "bugs": 53,
+    "comentarios": 29,
+    "extras": 4,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.3,
+    "arquivos_limpos": 23,
+    "limpos_com_comentario": 1
+   },
+   "holdout": {
+    "achados": 2,
+    "bugs": 4,
+    "comentarios": 2,
+    "extras": 0,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   },
+   "bugs": {
+    "achados": 2,
+    "bugs": 8,
+    "comentarios": 3,
+    "extras": 1,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 0.1
+   },
+   "real": {
+    "achados": 1,
+    "bugs": 199,
+    "comentarios": 12,
+    "extras": 11,
+    "problemas_de_formato": 0,
+    "segundos_no_modelo": 6.9,
+    "arquivos_limpos": 199,
+    "limpos_com_comentario": 5
+   }
+  }
+ }
+}

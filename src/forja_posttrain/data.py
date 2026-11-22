@@ -166,22 +166,31 @@ def dedup(exemplos: Iterable[InstructionExample], *, n: int = 5, limiar: float =
 
     O(N²) na near-dup: ok para os milhares de exemplos da v1. Na v2 entra MinHash + LSH (ex.: `datasketch`),
     que estima o mesmo Jaccard em O(N).
+
+    Pares contrastivos não contam como near-dup: o mesmo arquivo antes e depois da correção (`origem` com a
+    mesma base antes do `#`, ao menos um dos dois com sufixo, ex.: `github:repo@sha:arquivo` e
+    `github:repo@sha:arquivo#corrigido`) é quase igual por construção e de propósito. Duplicata exata
+    continua saindo.
     """
     rep = DedupReport(mantidos=[])
     vistos: dict[str, str] = {}
-    shingles: list[tuple[str, set]] = []
+    shingles: list[tuple[str, set, str, bool]] = []
     for ex in exemplos:
         h = hash_exato(ex)
         if h in vistos:
             rep.duplicatas_exatas.append((ex.id, vistos[h]))
             continue
         vistos[h] = ex.id
+        base, sufixo = ex.origem.split("#", 1)[0], "#" in ex.origem
         sh = ngramas(" ".join(m.content for m in ex.conversa()), n)
-        parecido = max(((jaccard(sh, s), eid) for eid, s in shingles), default=(0.0, ""))
+        parecido = max(
+            ((jaccard(sh, s), eid) for eid, s, b, suf in shingles if not (b == base and (suf or sufixo))),
+            default=(0.0, ""),
+        )
         if parecido[0] >= limiar:
             rep.quase_duplicatas.append((ex.id, parecido[1], round(parecido[0], 3)))
             continue
-        shingles.append((ex.id, sh))
+        shingles.append((ex.id, sh, base, sufixo))
         rep.mantidos.append(ex)
     return rep
 
