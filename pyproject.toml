@@ -38,7 +38,7 @@ packages = ["src/forja_posttrain"]
 
 # CPU local; no Kaggle/Colab o torch com CUDA já vem instalado.
 # forja-contracts local. Ao publicar o hub no GitHub, troque por:
-# forja-contracts = { git = "https://github.com/<usuario>/forja", subdirectory = "contracts" }
+# forja-contracts = { git = "https://github.com/josuekuhim/forja", subdirectory = "contracts" }
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'win32'" }]
 forja-contracts = { path = "../forja/contracts", editable = true }

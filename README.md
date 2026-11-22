@@ -1,8 +1,8 @@
 # forja-posttrain
 
-**Post-training for the [Forja](../forja) base model: full SFT, LoRA, QLoRA and DPO on the same model, all measured with the same yardstick ([forja-evals](../forja-evals)).**
+**Post-training for the [Forja](https://github.com/josuekuhim/forja) base model: full SFT, LoRA, QLoRA and DPO on the same model, all measured with the same yardstick ([forja-evals](https://github.com/josuekuhim/forja-evals)).**
 
-> **Result (R2, real data, Kaggle T4 GPU):** the same LoRA on Qwen2.5-Coder **0.5B**, changing only the data. Trained on 1,500 examples from **real bug-fix commits** (from [forja-dados](../forja-dados)), the reviewer finds **27 of 199 real bugs** in a PR built from 2025–2026 commits, against **9** for the model trained on synthetic data. Wrong comments drop from **313 to 89**, and precision rises from 3% to 23%. No forgetting on `forja-seed-v0`. The mixed model (synthetic + real) almost ties on the real PR (25/199) and is the best on the hand-planted bugs (4/8, with no wrong comment). It is still a 0.5B: 14% recall does not make it a reviewer on its own. What this round proves is the direction: **the bottleneck was the data, and changing the data moved recall and precision together.**
+> **Result (R2, real data, Kaggle T4 GPU):** the same LoRA on Qwen2.5-Coder **0.5B**, changing only the data. Trained on 1,500 examples from **real bug-fix commits** (from [forja-dados](https://github.com/josuekuhim/forja-dados)), the reviewer finds **27 of 199 real bugs** in a PR built from 2025–2026 commits, against **9** for the model trained on synthetic data. Wrong comments drop from **313 to 89**, and precision rises from 3% to 23%. No forgetting on `forja-seed-v0`. The mixed model (synthetic + real) almost ties on the real PR (25/199) and is the best on the hand-planted bugs (4/8, with no wrong comment). It is still a 0.5B: 14% recall does not make it a reviewer on its own. What this round proves is the direction: **the bottleneck was the data, and changing the data moved recall and precision together.**
 >
 > **R1 (CPU, synthetic data):** 1 → 15/53 bugs on a synthetic PR of never-seen templates, 100% valid format. But on the real PR the same model finds 9/199 and comments on 3 out of 4 bug-free files: it learned the generator, not code review.
 
@@ -13,10 +13,10 @@ R1 ended with a suspicion: the SFT learned the **synthetic generator**, not code
 | | Training data | Examples (train / val) | Steps | Time on T4 | Peak VRAM |
 | --- | --- | --- | --- | --- | --- |
 | **D1** | R1 synthetic (`review-sintetico-v0`) | 382 / 20 | 96 | 3.3 min | 3.4 GB |
-| **D2** | real (`review-real-v0`, from [forja-dados](../forja-dados)) | 1,425 / 75 | 358 | 31 min | 8.9 GB |
+| **D2** | real (`review-real-v0`, from [forja-dados](https://github.com/josuekuhim/forja-dados)) | 1,425 / 75 | 358 | 31 min | 8.9 GB |
 | **D3** | both, concatenated | 1,807 / 95 | 452 | 35 min | 8.9 GB |
 
-`review-real-v0` holds 750 bug-fix commits from 15 public Python repositories with permissive licenses, all before 2024-09-19. Each commit becomes two examples. The **positive** is the file before the fix, and its answer is a comment written by a teacher model (Gemma 4 26B, running on Kaggle) and validated against the line the commit changed. The **negative** is the file after the fix, whose answer is a one-line teacher summary with no comments. The yardstick is `review-eval-v0`, from [forja-evals](../forja-evals): a PR with 199 real bugs from **2025–2026** commits plus the 199 already-fixed files. It never becomes training data.
+`review-real-v0` holds 750 bug-fix commits from 15 public Python repositories with permissive licenses, all before 2024-09-19. Each commit becomes two examples. The **positive** is the file before the fix, and its answer is a comment written by a teacher model (Gemma 4 26B, running on Kaggle) and validated against the line the commit changed. The **negative** is the file after the fix, whose answer is a one-line teacher summary with no comments. The yardstick is `review-eval-v0`, from [forja-evals](https://github.com/josuekuhim/forja-evals): a PR with 199 real bugs from **2025–2026** commits plus the 199 already-fixed files. It never becomes training data.
 
 ### Results
 
@@ -90,7 +90,7 @@ python scripts/pontua_t4.py && python scripts/graficos_t4.py   # results/review-
 
 ## R1: PR reviewer on CPU (SFT LoRA on 0.5B)
 
-[forja-review](../forja-review) needs a small model that finds bugs in a diff. With Gemma 4 26B it finds 11 of 12 planted bugs, but takes 12 to 22 min per PR; Qwen 0.5B takes 1 to 2 min and finds 0. This experiment measures how much post-training closes that gap, **without a GPU**.
+[forja-review](https://github.com/josuekuhim/forja-review) needs a small model that finds bugs in a diff. With Gemma 4 26B it finds 11 of 12 planted bugs, but takes 12 to 22 min per PR; Qwen 0.5B takes 1 to 2 min and finds 0. This experiment measures how much post-training closes that gap, **without a GPU**.
 
 ### Results
 
@@ -110,7 +110,7 @@ python scripts/pontua_t4.py && python scripts/graficos_t4.py   # results/review-
 
 ¹ Sum of problems per file (invalid JSON, truncated answer, line outside the diff, descriptive comment).
 ² Wall clock for the 60 files, 8 parallel requests on forja-serve (fp32, CPU).
-³ Measured earlier with the v1 prompt (the current "full" one), in the [forja-review README](../forja-review).
+³ Measured earlier with the v1 prompt (the current "full" one), in the [forja-review README](https://github.com/josuekuhim/forja-review).
 
 Each reviewer's numbers, per PR and per class, are in [`results/review-cpu-v0.json`](results/review-cpu-v0.json), generated by [`scripts/graficos.py`](scripts/graficos.py) from forja-review's `--json-out` files.
 
@@ -163,7 +163,7 @@ The low validation loss does **not** measure generalization: validation comes fr
 - **Contamination checked on both sides.** Against `forja-seed-v0` (`check-data` aborts training) and against forja-review's planted PRs (5-gram containment: 0.03 and 0.085). Two templates that reproduced holdout idioms (inverted TTL, `descontos={}`) were rewritten before training.
 - **The prompt comes from forja-review.** The generator calls `forja_review.prompt.messages(..., estilo="curto")`: training and inference use the same text, byte for byte. The short prompt (no checklist and no solved example) saves ~550 tokens per call; the trained model does not need the long instructions.
 - **CPU fp32, no checkpointing.** Measured: a 1,100-token pass takes ~30 s with or without activation checkpointing; without it, memory is left over and there is no recomputation.
-- **A non-ML baseline on the same yardstick.** [`forja-review/examples/linters.py`](../forja-review/examples/linters.py) rebuilds the files from the diff, runs ruff/bandit, keeps only findings on added lines (the same rule as the model's anchoring) and translates each rule into the phrase for the class it detects (B006 → "mutable default argument"), so `recall.py` decides with the same keyword check. Without it, "15/53" would not say whether the model is worth anything.
+- **A non-ML baseline on the same yardstick.** [`forja-review/examples/linters.py`](https://github.com/josuekuhim/forja-review/blob/master/examples/linters.py) rebuilds the files from the diff, runs ruff/bandit, keeps only findings on added lines (the same rule as the model's anchoring) and translates each rule into the phrase for the class it detects (B006 → "mutable default argument"), so `recall.py` decides with the same keyword check. Without it, "15/53" would not say whether the model is worth anything.
 
 ### What went wrong (and what changed)
 
@@ -237,7 +237,7 @@ forja-pretrain ──► forja-posttrain ──► forja-serve ──► forja-r
                      forja-evals (the yardstick)
 ```
 
-- **Input:** the base model from [ADR 0001](../forja/docs/adr/0001-modelo-base.md) (Qwen2.5-Coder-1.5B-Instruct as the plan, 0.5B as plan B with the same tokenizer; R1 and R2 use the 0.5B), an instruction dataset and preference pairs (`PreferencePair` from `forja-contracts`, generated by `forja-evals pairs`).
+- **Input:** the base model from [ADR 0001](https://github.com/josuekuhim/forja/blob/main/docs/adr/0001-modelo-base.md) (Qwen2.5-Coder-1.5B-Instruct as the plan, 0.5B as plan B with the same tokenizer; R1 and R2 use the 0.5B), an instruction dataset and preference pairs (`PreferencePair` from `forja-contracts`, generated by `forja-evals pairs`).
 - **Output:** safetensors checkpoints (LoRA adapter and merged model) for `forja-serve`, each with its resolved `config.yaml`, seed, versions and `summary.json`.
 - **Yardstick:** every checkpoint is served on an OpenAI-compatible endpoint and evaluated by forja-evals on a set that **never** touches training (explicit contamination check, below).
 
@@ -293,9 +293,9 @@ The repositories sit side by side: `forja-contracts` comes from `../forja/contra
 1. **A notebook with a GPU.** Kaggle: *Settings → Accelerator → GPU T4* and *Internet on*. Colab: *Runtime → T4*.
 2. **Clone the three repositories side by side** (contracts and the evaluation datasets are dependencies):
    ```bash
-   git clone https://github.com/<user>/forja
-   git clone https://github.com/<user>/forja-evals
-   git clone https://github.com/<user>/forja-posttrain
+   git clone https://github.com/josuekuhim/forja
+   git clone https://github.com/josuekuhim/forja-evals
+   git clone https://github.com/josuekuhim/forja-posttrain
    cd forja-posttrain
    ```
 3. **Install, reusing the CUDA torch that ships with the environment** (`uv.lock` was resolved on Windows/CPU; in the notebook pip is faster):
@@ -368,7 +368,7 @@ Offline (`HF_HUB_OFFLINE=1` in `conftest.py`). The review-generator tests requir
 ## Limitations
 
 - **R1 (CPU) and R2 (T4) trained for real, only LoRA on the 0.5B.** E1–E4 (QLoRA, full SFT, 1.5B, rank) remain planned.
-- **R1 and R2 are one seed per run.** R2 already uses real data from [forja-dados](../forja-dados), but is evaluated on the same repositories as training (temporal split only).
+- **R1 and R2 are one seed per run.** R2 already uses real data from [forja-dados](https://github.com/josuekuhim/forja-dados), but is evaluated on the same repositories as training (temporal split only).
 - The data in `data/exemplo/` is 9 examples and 3 hand-written pairs: it proves the plumbing, it teaches nothing.
 - Near-dup is O(N²) with exact Jaccard; MinHash + LSH comes in v2, when the dataset passes a few thousand examples.
 - Contamination is lexical (n-grams). A paraphrase of an eval case gets through; a semantic check (embeddings) is left for v2.
